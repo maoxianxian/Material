@@ -22,7 +22,7 @@ glm::mat4 Window::V;
 void Window::initialize_objects()
 {
 	cube = new Cube();
-
+	OBJObject * bunny = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bunny.obj");
 	// Load the shader program. Make sure you have the correct filepath up top
 	shaderProgram = LoadShaders(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
 }
