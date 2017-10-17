@@ -12,7 +12,7 @@
 #include <GLFW/glfw3.h>
 #include "Cube.h"
 #include "shader.h"
-
+#include "OBJObject.h"
 class Window
 {
 public:
