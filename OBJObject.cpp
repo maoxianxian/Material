@@ -120,13 +120,13 @@ void OBJObject::update()
 {
 }
 
-void OBJObject::spin(float deg)
-{
-	// This creates the matrix to rotate the cube
-	this->toWorld = toWorld*glm::rotate(glm::mat4(1.0f), deg / 180.0f * glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f));
-}
+
 
 void OBJObject::translate(float x, float y, float z)
+{
+	this->toWorld = this->toWorld*glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
+}
+void OBJObject::translateAfter(float x, float y, float z)
 {
 	this->toWorld = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z))*this->toWorld;
 }
@@ -135,14 +135,7 @@ void OBJObject::scale(float x, float y, float z)
 {
 	this->toWorld = glm::scale(glm::mat4(1.0f), glm::vec3(x, x, x))*this->toWorld;
 }
-void OBJObject::orbitLeft()
-{
-	this->toWorld = glm::rotate(glm::mat4(1.0f), 3 / 180.0f * glm::pi<float>(), glm::vec3(0.0f, 0.0f, 1.0f))*this->toWorld;
-}
-void OBJObject::orbitRight()
-{
-	this->toWorld = glm::rotate(glm::mat4(1.0f), -3 / 180.0f * glm::pi<float>(), glm::vec3(0.0f, 0.0f, 1.0f))*this->toWorld;
-}
+
 void OBJObject::resetPosition()
 {
 	this->toWorld = glm::translate(glm::mat4(1.0f), glm::vec3(-1 * this->toWorld[3][0], -1 * this->toWorld[3][1], -1 * this->toWorld[3][2]))*this->toWorld;
@@ -166,7 +159,5 @@ std::vector <glm::vec3> OBJObject::getNormals()
 }
 void OBJObject::rotate(glm::vec3 axies, float deg)
 {
-	//cout << axies[0]<<" "<<axies[1]<<" "<<axies[2]<<" "<<deg << endl;
-
-	this->toWorld = glm::rotate(glm::mat4(1.0f), deg, axies)*this->toWorld;
+	this->toWorld = glm::rotate(this->toWorld, deg, axies);
 }

@@ -41,9 +41,8 @@ public:
 	void parse(const char* filepath);
 	void draw(GLuint shaderProgram);
 	void translate(float x, float y, float z);
+	void translateAfter(float x, float y, float z);
 	void scale(float x, float y, float z);
-	void orbitLeft();
-	void orbitRight();
 	void resetPosition();
 	void resetScale();
 	void rotate(glm::vec3 axies, float deg);

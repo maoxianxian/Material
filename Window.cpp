@@ -19,7 +19,7 @@ glm::vec3 cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
 
 int Window::width;
 int Window::height;
-double prexpos, preypos;
+double prexpos, preypos, prerightx, prerighty;
 
 glm::mat4 Window::P;
 glm::mat4 Window::V;
@@ -116,6 +116,10 @@ void Window::mouse_callback(GLFWwindow* window, int button, int action, int mods
 	{
 		glfwGetCursorPos(window, &prexpos, &preypos);
 	}
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+	{
+		glfwGetCursorPos(window, &prerightx, &prerighty);
+	}
 }
 void Window::display_callback(GLFWwindow* window)
 {
@@ -147,6 +151,19 @@ void Window::display_callback(GLFWwindow* window)
 			prexpos = xpos;
 			preypos = ypos;
 		}
+	}
+	state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
+	if (state == GLFW_PRESS)
+	{
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+		if (xpos != prerightx && ypos != prerighty)
+		{
+			obj->translateAfter((xpos - prerightx)/24.0f, (prerighty - ypos)/18.0f, 0);
+			//std::cout << xpos<<" "<<ypos  << std::endl;
+		}
+		prerightx = xpos;
+		prerighty = ypos;
 	}
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
