@@ -13,7 +13,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
-
+#include "Window.h"
 class OBJObject
 {
 private:
@@ -24,19 +24,29 @@ private:
 	float angle;
 	float scaleParam = 1;
 	float orbitAngle = 0;
+	GLuint VBO, VAO, EBO;
+	GLuint uProjection, uModelview;
+	float xmax;
+	float xmin;
+	float ymax;
+	float ymin;
+	float zmax;
+	float zmin;
 public:
 	OBJObject(const char* filepath);
+	~OBJObject();
 	void update();
-
-	void spin(float);
+	void center();
+	void spin(float deg);
 	void parse(const char* filepath);
-	void draw();
+	void draw(GLuint shaderProgram);
 	void translate(float x, float y, float z);
-	void scale(float x);
+	void scale(float x, float y, float z);
 	void orbitLeft();
 	void orbitRight();
 	void resetPosition();
 	void resetScale();
+	void rotate(glm::vec3 axies, float deg);
 	glm::mat4 getMat();
 	std::vector<glm::vec3> getVert();
 	std::vector <glm::vec3> getNormals();

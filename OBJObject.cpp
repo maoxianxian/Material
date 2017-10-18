@@ -7,8 +7,32 @@ OBJObject::OBJObject(const char *filepath)
 {
 	toWorld = glm::mat4(1.0f);
 	parse(filepath);
+
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*vertices.size(), &vertices[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0,// This first parameter x should be the same as the number passed into the line "layout (location = x)" in the vertex shader. In this case, it's 0. Valid values are 0 to GL_MAX_UNIFORM_LOCATIONS.
+		3, // This second line tells us how any components there are per vertex. In this case, it's 3 (we have an x, y, and z component)
+		GL_FLOAT, // What type these components are
+		GL_FALSE, // GL_TRUE means the values should be normalized. GL_FALSE means they shouldn't
+		3 * sizeof(GLfloat), // Offset between consecutive indices. Since each of our vertices have 3 floats, they should have the size of 3 floats in between
+		(GLvoid*)0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
+OBJObject::~OBJObject()
+{
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+}
 void OBJObject::parse(const char *filepath)
 {
 	//TODO parse the OBJ file
@@ -31,16 +55,35 @@ void OBJObject::parse(const char *filepath)
 			int a = fscanf(fp, "%f %f %f", &x, &y, &z);
 			glm::vec3 temp = glm::vec3(x, y, z);
 			vertices.push_back(temp);
+			if (x > xmax)
+			{
+				xmax = x;
+			}
+			if (x < xmin)
+			{
+				xmin = x;
+			}if (y > ymax)
+			{
+				ymax = y;
+			}if (y < ymin)
+			{
+				ymax = y;
+			}if (z > zmax)
+			{
+				zmax = z;
+			}if (z < zmin)
+			{
+				zmin = z;
+			}
 		}
 		else
 		{
 			if ((c1 == 'f') && (c2 == ' '))
 			{
 				fscanf(fp, "%d %s %d %s %d", &i1, &temps, &i2, &temps, &i3);
-				indices.push_back(i1);
-				indices.push_back(i2);
-				indices.push_back(i3);
-				cout << i3 << endl;
+				indices.push_back(i1-1);
+				indices.push_back(i2-1);
+				indices.push_back(i3-1);
 			}
 			else if ((c1 == 'v') && (c2 == 'n') && (fgetc(fp) == ' '))
 			{
@@ -53,40 +96,28 @@ void OBJObject::parse(const char *filepath)
 		fgets(buffer, 128, fp);
 	}
 	fclose(fp);   // make sure you don't forget to close the file when done
+	center();
+	scale(2.0f / (xmax - xmin), 2.0f / (ymax - ymin), 2.0f / (zmax - zmin));
 }
 
-void OBJObject::draw()
+void OBJObject::draw(GLuint shaderProgram)
 {
-	glMatrixMode(GL_MODELVIEW);
-
-	// Push a save state onto the matrix stack, and multiply in the toWorld matrix
-	glPushMatrix();
-	glMultMatrixf(&(toWorld[0][0]));
-
-	glBegin(GL_POINTS);
-	// Loop through all the vertices of this OBJ Object and render them
-	//cout << normals.size() - vertices.size()<<endl;
-	for (unsigned int i = 0; i < vertices.size(); ++i)
-	{
-		//cout << vertices.size() - normals.size() << endl;
-		GLfloat length = normals[i].x*normals[i].x + normals[i].y*normals[i].y + normals[i].z*normals[i].z;
-		length = sqrt(length);
-		GLfloat x = (normals[i].x / length + 1) / 2;
-		GLfloat y = (normals[i].y / length + 1) / 2;
-		GLfloat z = (normals[i].z / length + 1) / 2;
-		glColor3f(x, y, z);
-		glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
-	}
-	glEnd();
-
-	// Pop the save state off the matrix stack
-	// This will undo the multiply we did earlier
-	glPopMatrix();
+	glm::mat4 modelview = Window::V * toWorld;
+	uProjection = glGetUniformLocation(shaderProgram, "projection");
+	uModelview = glGetUniformLocation(shaderProgram, "modelview");
+	glUniformMatrix4fv(uProjection, 1, GL_FALSE, &Window::P[0][0]);
+	glUniformMatrix4fv(uModelview, 1, GL_FALSE, &modelview[0][0]);
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 }
 
+void OBJObject::center()
+{
+	translate(-(xmin + xmax) / 2, -(ymin + ymax) / 2, -(zmin + zmax) / 2);
+}
 void OBJObject::update()
 {
-	spin(1.0f);
 }
 
 void OBJObject::spin(float deg)
@@ -100,9 +131,9 @@ void OBJObject::translate(float x, float y, float z)
 	this->toWorld = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z))*this->toWorld;
 }
 
-void OBJObject::scale(float x)
+void OBJObject::scale(float x, float y, float z)
 {
-	this->toWorld = this->toWorld*glm::scale(glm::mat4(1.0f), glm::vec3(x, x, x));
+	this->toWorld = glm::scale(glm::mat4(1.0f), glm::vec3(x, x, x))*this->toWorld;
 }
 void OBJObject::orbitLeft()
 {
@@ -132,4 +163,10 @@ std::vector<glm::vec3> OBJObject::getVert()
 std::vector <glm::vec3> OBJObject::getNormals()
 {
 	return this->normals;
+}
+void OBJObject::rotate(glm::vec3 axies, float deg)
+{
+	//cout << axies[0]<<" "<<axies[1]<<" "<<axies[2]<<" "<<deg << endl;
+
+	this->toWorld = glm::rotate(glm::mat4(1.0f), deg, axies)*this->toWorld;
 }

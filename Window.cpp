@@ -1,7 +1,11 @@
 #include "window.h"
-
+#include <math.h>
 const char* window_title = "GLFW Starter Project";
-Cube * cube;
+OBJObject * obj;
+OBJObject * bunny;
+OBJObject * bear;
+OBJObject * dragon;
+
 GLint shaderProgram;
 
 // On some systems you need to change this to the absolute path
@@ -15,14 +19,17 @@ glm::vec3 cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
 
 int Window::width;
 int Window::height;
+double prexpos, preypos;
 
 glm::mat4 Window::P;
 glm::mat4 Window::V;
 
 void Window::initialize_objects()
 {
-	cube = new Cube();
-	OBJObject * bunny = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bunny.obj");
+	bunny = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bunny.obj");
+	bear = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bear.obj");
+	dragon = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\dragon.obj");
+	obj = bunny;
 	// Load the shader program. Make sure you have the correct filepath up top
 	shaderProgram = LoadShaders(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
 }
@@ -30,7 +37,7 @@ void Window::initialize_objects()
 // Treat this as a destructor function. Delete dynamically allocated memory here.
 void Window::clean_up()
 {
-	delete(cube);
+	delete(obj);
 	glDeleteProgram(shaderProgram);
 }
 
@@ -101,9 +108,15 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 void Window::idle_callback()
 {
 	// Call the update function the cube
-	cube->update();
+	obj->update();
 }
-
+void Window::mouse_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		glfwGetCursorPos(window, &prexpos, &preypos);
+	}
+}
 void Window::display_callback(GLFWwindow* window)
 {
 	// Clear the color and depth buffers
@@ -113,14 +126,44 @@ void Window::display_callback(GLFWwindow* window)
 	glUseProgram(shaderProgram);
 	
 	// Render the cube
-	cube->draw(shaderProgram);
-
+	obj->draw(shaderProgram);
+	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+	if (state == GLFW_PRESS)
+	{
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+		if (xpos != prexpos || ypos != preypos)
+		{
+			glm::vec3 prevec = trackmap(prexpos, preypos);
+			glm::vec3 curvec = trackmap(xpos, ypos);
+			glm::vec3 res = glm::cross(prevec, curvec);
+			float cos = glm::dot(prevec, curvec) / (glm::length(prevec)*glm::length(curvec));
+			if (cos > 1)
+			{
+				cos = 1;
+			}
+			float deg = acos(cos);
+			obj->rotate(res, deg);
+			prexpos = xpos;
+			preypos = ypos;
+		}
+	}
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
 	// Swap buffers
 	glfwSwapBuffers(window);
 }
-
+glm::vec3 Window::trackmap(double x, double y)
+{
+	glm::vec3 result( (2.0f * x - width) / width, (height- 2.0f*y)/height, 0.0f);
+	float length = glm::length(result);
+	if (length > 1.0f)
+	{
+		length = 1.0;
+	}
+	result[2] = sqrt(1.001 - length*length);
+	return glm::normalize(result);
+}
 void Window::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	// Check for a key press
@@ -131,6 +174,18 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		{
 			// Close the window. This causes the program to also terminate.
 			glfwSetWindowShouldClose(window, GL_TRUE);
+		}
+		else if (key == GLFW_KEY_F1)
+		{
+			obj = bunny;
+		}
+		else if (key == GLFW_KEY_F2)
+		{
+			obj = dragon;
+		}
+		else if (key == GLFW_KEY_F3)
+		{
+			obj = bear;
 		}
 	}
 }
