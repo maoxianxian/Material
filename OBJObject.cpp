@@ -7,7 +7,6 @@ OBJObject::OBJObject(const char *filepath)
 {
 	toWorld = glm::mat4(1.0f);
 	parse(filepath);
-
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
@@ -159,5 +158,5 @@ std::vector <glm::vec3> OBJObject::getNormals()
 }
 void OBJObject::rotate(glm::vec3 axies, float deg)
 {
-	this->toWorld = glm::rotate(this->toWorld, deg, axies);
+	this->toWorld = glm::rotate(glm::mat4(1.0f) , deg, axies)*this->toWorld;
 }

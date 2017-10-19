@@ -157,9 +157,9 @@ void Window::display_callback(GLFWwindow* window)
 	{
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
-		if (xpos != prerightx && ypos != prerighty)
+		if (xpos != prerightx || ypos != prerighty)
 		{
-			obj->translateAfter((xpos - prerightx)/24.0f, (prerighty - ypos)/18.0f, 0);
+			obj->translateAfter((xpos - prerightx)*28.0f/Window::width, (prerighty - ypos)*28.0f/Window::height, 0);
 			//std::cout << xpos<<" "<<ypos  << std::endl;
 		}
 		prerightx = xpos;
