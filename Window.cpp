@@ -121,6 +121,19 @@ void Window::mouse_callback(GLFWwindow* window, int button, int action, int mods
 		glfwGetCursorPos(window, &prerightx, &prerighty);
 	}
 }
+void Window::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	if (yoffset != 0)
+	{
+		obj->translateAfter(0, 0, yoffset);
+	}
+	/*else
+	{
+		std::cout << yoffset << std::endl;
+
+		obj->scale(-0.9*yoffset, -0.9*yoffset, -0.9*yoffset);
+	}*/
+}
 void Window::display_callback(GLFWwindow* window)
 {
 	// Clear the color and depth buffers
@@ -165,6 +178,7 @@ void Window::display_callback(GLFWwindow* window)
 		prerightx = xpos;
 		prerighty = ypos;
 	}
+
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
 	// Swap buffers

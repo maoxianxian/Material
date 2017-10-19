@@ -25,6 +25,7 @@ public:
 	static GLFWwindow* create_window(int width, int height);
 	static void resize_callback(GLFWwindow* window, int width, int height);
 	static void idle_callback();
+	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	static glm::vec3 trackmap(double x, double y);
 	static void mouse_callback(GLFWwindow* window, int button, int action, int mods);
 	static void display_callback(GLFWwindow*);
