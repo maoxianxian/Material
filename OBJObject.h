@@ -14,6 +14,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 #include "Window.h"
+
+
 class OBJObject
 {
 private:
@@ -24,7 +26,7 @@ private:
 	float angle;
 	float scaleParam = 1;
 	float orbitAngle = 0;
-	GLuint VBO, VAO, EBO;
+	GLuint VBO, VAO, EBO, NBO;
 	GLuint uProjection, uModelview;
 	float xmax;
 	float xmin;
@@ -33,6 +35,11 @@ private:
 	float zmax;
 	float zmin;
 public:
+	struct material {
+		glm::vec3 ambient;
+		glm::vec3 diffuse;
+		glm::vec3 specular;
+	};
 	OBJObject(const char* filepath);
 	~OBJObject();
 	void update();

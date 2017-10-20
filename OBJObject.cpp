@@ -10,8 +10,11 @@ OBJObject::OBJObject(const char *filepath)
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
+	glGenBuffers(1, &NBO);
+
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, NBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*vertices.size(), &vertices[0], GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0,// This first parameter x should be the same as the number passed into the line "layout (location = x)" in the vertex shader. In this case, it's 0. Valid values are 0 to GL_MAX_UNIFORM_LOCATIONS.
@@ -22,6 +25,10 @@ OBJObject::OBJObject(const char *filepath)
 		(GLvoid*)0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
+	//glBindBuffer(GL_ARRAY_BUFFER, NBO);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*normals.size(), &normals[0], GL_STATIC_DRAW);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
@@ -66,7 +73,7 @@ void OBJObject::parse(const char *filepath)
 				ymax = y;
 			}if (y < ymin)
 			{
-				ymax = y;
+				ymin = y;
 			}if (z > zmax)
 			{
 				zmax = z;
@@ -107,6 +114,8 @@ void OBJObject::draw(GLuint shaderProgram)
 	glUniformMatrix4fv(uProjection, 1, GL_FALSE, &Window::P[0][0]);
 	glUniformMatrix4fv(uModelview, 1, GL_FALSE, &modelview[0][0]);
 	glBindVertexArray(VAO);
+	//glBindBuffer(GL_ARRAY_BUFFER, NBO);
+	//glNormalPointer(GL_FLOAT, 0, 0L);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }

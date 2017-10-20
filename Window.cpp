@@ -30,7 +30,7 @@ void Window::initialize_objects()
 	bear = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bear.obj");
 	dragon = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\dragon.obj");
 	obj = bunny;
-	// Load the shader program. Make sure you have the correct filepath up top
+	//  the shader program. Make sure you have the correct filepath up top
 	shaderProgram = LoadShaders(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
 }
 
@@ -127,12 +127,6 @@ void Window::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	{
 		obj->translateAfter(0, 0, yoffset);
 	}
-	/*else
-	{
-		std::cout << yoffset << std::endl;
-
-		obj->scale(-0.9*yoffset, -0.9*yoffset, -0.9*yoffset);
-	}*/
 }
 void Window::display_callback(GLFWwindow* window)
 {
@@ -173,7 +167,6 @@ void Window::display_callback(GLFWwindow* window)
 		if (xpos != prerightx || ypos != prerighty)
 		{
 			obj->translateAfter((xpos - prerightx)*28.0f/Window::width, (prerighty - ypos)*28.0f/Window::height, 0);
-			//std::cout << xpos<<" "<<ypos  << std::endl;
 		}
 		prerightx = xpos;
 		prerighty = ypos;
@@ -217,6 +210,38 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		else if (key == GLFW_KEY_F3)
 		{
 			obj = bear;
+		}
+		else if (key == GLFW_KEY_S)
+		{
+			if (mods)
+			{
+				obj->scale(1.1, 1.1, 1.1);
+			}
+			else
+			{
+				obj->scale(0.9, 0.9, 0.9);
+			}
+		}
+		else if (key == GLFW_KEY_R)
+		{
+			if (!mods)
+			{
+				obj->resetPosition();
+			}
+		}
+	}
+	if (action == GLFW_REPEAT)
+	{
+		if (key == GLFW_KEY_S)
+		{
+			if (mods)
+			{
+				obj->scale(1.1, 1.1, 1.1);
+			}
+			else
+			{
+				obj->scale(0.9, 0.9, 0.9);
+			}
 		}
 	}
 }
