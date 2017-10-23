@@ -40,6 +40,7 @@ public:
 		glm::vec3 diffuse;
 		glm::vec3 specular;
 	};
+	material mater;
 	OBJObject(const char* filepath);
 	~OBJObject();
 	void update();
