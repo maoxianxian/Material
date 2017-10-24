@@ -7,11 +7,12 @@ OBJObject * obj;
 OBJObject * bunny;
 OBJObject * bear;
 OBJObject * dragon;
-directionalLight direction;
-pointLight point;
-spotLight spot;
+light* currlit;
+light direction(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f));
+light point(glm::vec3(0.0f, -10.0f, 0.0f), glm::vec3(1.0f), 1.0f);
+light spot(glm::vec3(10.0f, 0.0f, 0.0f), glm::vec3(1.0f), 1.0f, glm::vec3(-1.0f, 0.0f, 0.0f), (float)M_PI / 3.0f, 1.0f);
 GLint shaderProgram;
-
+bool mode = false;
 // On some systems you need to change this to the absolute path
 #define VERTEX_SHADER_PATH "../shader.vert"
 #define FRAGMENT_SHADER_PATH "../shader.frag"
@@ -30,12 +31,11 @@ glm::mat4 Window::V;
 
 void Window::initialize_objects()
 {
-	direction = { glm::vec3(1.0f), glm::vec3(0.0f,-1.0f,0.0f) };
-	point = { glm::vec3(1.0f), glm::vec3(0.0f,-10.0f, 0.0f), 1.0f };
-	spot = { glm::vec3(1.0f), glm::vec3(10.0f, 0.0f, 0.0f), 1.0f, 1.0f, (float)M_PI / 3.0f, glm::vec3(-1.0f,0.0f,0.0f) };
-	bunny = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bunny.obj",1);
-	bear = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bear.obj", 2);
-	dragon = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\dragon.obj",3);
+
+	bunny = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bunny.obj",0);
+	bear = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bear.obj",1);
+	dragon = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\dragon.obj",2);
+	currlit = &direction;
 	obj = bunny;
 	//  the shader program. Make sure you have the correct filepath up top
 	shaderProgram = LoadShaders(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
@@ -144,7 +144,18 @@ void Window::display_callback(GLFWwindow* window)
 	// Use the shader of programID
 	glUseProgram(shaderProgram);
 	
-	// Render the cube
+	// Render the cube	
+	int temp = glGetUniformLocation(shaderProgram, "mode");
+	if (mode)
+	{
+		glUniform1i(temp, 1);
+	}
+	else
+	{
+		glUniform1i(temp, 0);
+	}
+	//std::cout << mode << std::endl;
+	currlit->draw(shaderProgram);
 	obj->draw(shaderProgram);
 	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 	if (state == GLFW_PRESS)
@@ -218,6 +229,11 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		else if (key == GLFW_KEY_F3)
 		{
 			obj = bear;
+		}
+		else if (key == GLFW_KEY_N)
+		{
+			//std::cout << mode << std::endl;
+			mode = !mode;
 		}
 		else if (key == GLFW_KEY_S)
 		{

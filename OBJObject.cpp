@@ -5,14 +5,12 @@
 using namespace std;
 OBJObject::OBJObject(const char *filepath, int type)
 {
-	if (type == 1)
+	if (type == 0)
 	{
-		
-
+		mater.ambient = glm::vec3(0.135f,0.2225,0.1575);
+		mater.diffuse = glm::vec3(0.54, 0.89, 0.63);
+		mater.specular = glm::vec3(0.316228, 0.316228, 0.316228);
 	}
-	this->direction = direction;
-	this->point = point;
-	this->spot = spot;
 	toWorld = glm::mat4(1.0f);
 	parse(filepath);
 	glGenVertexArrays(1, &VAO);
@@ -122,11 +120,15 @@ void OBJObject::draw(GLuint shaderProgram)
 	glm::mat4 modelview = Window::V * toWorld;
 	uProjection = glGetUniformLocation(shaderProgram, "projection");
 	uModelview = glGetUniformLocation(shaderProgram, "modelview");
+	int temp = glGetUniformLocation(shaderProgram, "ambient");
+	glUniform3fv(temp, 1, &mater.ambient[0]);
+	temp = glGetUniformLocation(shaderProgram, "diffuse");
+	glUniform3fv(temp, 1, &mater.diffuse[0]); 
+	temp = glGetUniformLocation(shaderProgram, "specular");
+	glUniform3fv(temp, 1, &mater.specular[0]);
 	glUniformMatrix4fv(uProjection, 1, GL_FALSE, &Window::P[0][0]);
 	glUniformMatrix4fv(uModelview, 1, GL_FALSE, &modelview[0][0]);
 	glBindVertexArray(VAO);
-	//glBindBuffer(GL_ARRAY_BUFFER, NBO);
-	//glNormalPointer(GL_FLOAT, 0, 0);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }

@@ -16,9 +16,9 @@
 #include "Window.h"
 
 struct material {
-	float ambientCof;
-	float diffuseCof;
-	float specularCof;
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
 };
 class OBJObject
 {
@@ -41,9 +41,9 @@ private:
 public:
 	
 	material mater;
-	directionalLight * direction;
+	/*directionalLight * direction;
 	pointLight* point;
-	spotLight* spot;
+	spotLight* spot;*/
 	OBJObject(const char* filepath, int type);
 	~OBJObject();
 	void update();
