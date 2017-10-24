@@ -1,11 +1,15 @@
+#define _USE_MATH_DEFINES
 #include "window.h"
 #include <math.h>
+#include "OBJObject.h"
 const char* window_title = "GLFW Starter Project";
 OBJObject * obj;
 OBJObject * bunny;
 OBJObject * bear;
 OBJObject * dragon;
-
+directionalLight direction;
+pointLight point;
+spotLight spot;
 GLint shaderProgram;
 
 // On some systems you need to change this to the absolute path
@@ -26,12 +30,16 @@ glm::mat4 Window::V;
 
 void Window::initialize_objects()
 {
-	bunny = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bunny.obj");
-	bear = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bear.obj");
-	dragon = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\dragon.obj");
+	direction = { glm::vec3(1.0f), glm::vec3(0.0f,-1.0f,0.0f) };
+	point = { glm::vec3(1.0f), glm::vec3(0.0f,-10.0f, 0.0f), 1.0f };
+	spot = { glm::vec3(1.0f), glm::vec3(10.0f, 0.0f, 0.0f), 1.0f, 1.0f, (float)M_PI / 3.0f, glm::vec3(-1.0f,0.0f,0.0f) };
+	bunny = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bunny.obj",1);
+	bear = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bear.obj", 2);
+	dragon = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\dragon.obj",3);
 	obj = bunny;
 	//  the shader program. Make sure you have the correct filepath up top
 	shaderProgram = LoadShaders(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
+	
 }
 
 // Treat this as a destructor function. Delete dynamically allocated memory here.

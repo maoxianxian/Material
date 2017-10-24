@@ -15,7 +15,11 @@
 #include <vector>
 #include "Window.h"
 
-
+struct material {
+	float ambientCof;
+	float diffuseCof;
+	float specularCof;
+};
 class OBJObject
 {
 private:
@@ -35,13 +39,12 @@ private:
 	float zmax;
 	float zmin;
 public:
-	struct material {
-		glm::vec3 ambient;
-		glm::vec3 diffuse;
-		glm::vec3 specular;
-	};
+	
 	material mater;
-	OBJObject(const char* filepath);
+	directionalLight * direction;
+	pointLight* point;
+	spotLight* spot;
+	OBJObject(const char* filepath, int type);
 	~OBJObject();
 	void update();
 	void center();

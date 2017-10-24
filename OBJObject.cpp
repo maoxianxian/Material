@@ -3,8 +3,16 @@
 #include <math.h>
 #include <glm/gtc/type_ptr.hpp>
 using namespace std;
-OBJObject::OBJObject(const char *filepath)
+OBJObject::OBJObject(const char *filepath, int type)
 {
+	if (type == 1)
+	{
+		
+
+	}
+	this->direction = direction;
+	this->point = point;
+	this->spot = spot;
 	toWorld = glm::mat4(1.0f);
 	parse(filepath);
 	glGenVertexArrays(1, &VAO);
@@ -28,6 +36,7 @@ OBJObject::OBJObject(const char *filepath)
 
 	glBindBuffer(GL_ARRAY_BUFFER, NBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*normals.size(), &normals[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -40,6 +49,7 @@ OBJObject::~OBJObject()
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
 }
+
 void OBJObject::parse(const char *filepath)
 {
 	//TODO parse the OBJ file

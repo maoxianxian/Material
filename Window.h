@@ -12,7 +12,23 @@
 #include <GLFW/glfw3.h>
 #include "Cube.h"
 #include "shader.h"
-#include "OBJObject.h"
+struct directionalLight {
+	glm::vec3 Color;
+	glm::vec3 Direction;
+};
+struct pointLight {
+	glm::vec3 Color;
+	glm::vec3 Position;
+	float attenuation;
+};
+struct spotLight {
+	glm::vec3 Color;
+	glm::vec3 Position;
+	float attenuation;
+	float exponent;
+	float coneAngle;
+	glm::vec3 coneDirection;
+};
 class Window
 {
 public:
