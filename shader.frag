@@ -26,11 +26,8 @@ out vec4 color;
 void main()
 {
 	vec3 normalvec = normalvecin;
-	//float lengthl=sqrt(normalvecin.x*normalvecin.x+normalvecin.y*normalvecin.y+normalvecin.z*normalvecin.z);
-	//vec3 normalvec=vec3(normalvecin.x/lengthl,normalvecin.y/lengthl,normalvecin.z/lengthl);
 	if(mode==0){
     // Color everything a hot pink color. An alpha of 1.0f means it is not transparent.
-	//if(length(normalvec)==1){
 		color = vec4((normalvec.x+1)/2.0f, (normalvec.y+1)/2.0f, (normalvec.z+1)/2.0f, sampleExtraOutput);
 		//color = vec4(normalvec.x, normalvec.y, normalvec.z, sampleExtraOutput);
 	}
@@ -43,10 +40,10 @@ void main()
 			L= vec3(Light.light_dir.x*(-1), Light.light_dir.y*(-1), Light.light_dir.z*(-1));
 			cl=Light.light_color;
 		}
-		/*if(Light.light_mode==1)
+		if(Light.light_mode==1)
 		{
 			L=(Light.light_pos-vertex)/length(Light.light_pos-vertex);
-			cl=Light.light_color/pow(length(Light.light_pos-vertex),2);
+			cl=Light.light_color/(Light.att*(length(Light.light_pos-vertex)));
 		}
 		if(Light.light_mode==2)
 		{
@@ -57,21 +54,19 @@ void main()
 			}
 			else
 			{
-				cl=Light.light_color*pow(dot(-L,Light.light_dir),Light.exponent);
+				cl=Light.light_color*pow(dot(-L,Light.light_dir),Light.exponent)/(Light.att*pow(length(Light.light_pos-vertex),2));
 			}
-		}*/
+		}
 		vec3 cd=vec3(0);
 		cd=cl*diffuse*dot(normalvec,L);
 		vec3 ca=vec3(0);
 		ca=cl*ambient;
 		vec3 cs=vec3(0);
-		vec3 R=reflect(L,normalvec);
-		//vec3 R=normalize(L-2*(dot(L,normalvec))*normalvec);
-		if(ca.x+cd.x+cs.x<=1&&ca.y+cd.y+cs.y<=1&&ca.z+cd.z+cs.z<=1)
-		{
-		vec3 e=vec3(0,0,1);
+		vec3 R=normalize(reflect(L,normalvec));
+		vec3 e=vec3(0,0,-1);
 		cs=cl*specular*pow(dot(R,e),shiness);
 		color=vec4(ca.x+cd.x+cs.x,ca.y+cd.y+cs.y,ca.z+cd.z+cs.z,sampleExtraOutput);
-		}
+		//if(Light.att==0){
+		//color=vec4(1.0f,1.0f,1.0f,1);}
 	}
 }

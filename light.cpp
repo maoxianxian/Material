@@ -1,4 +1,5 @@
 #include "light.h"
+#include <iostream>
 light::light(glm::vec3 Direction, glm::vec3 color)
 {
 	type = 0;
@@ -23,7 +24,7 @@ light::light(glm::vec3 position, glm::vec3 color, float attenuation, glm::vec3 c
 	this->coneAngle = coneAngle;
 	this->exponent = exponent;
 }
-void light::draw(GLuint shaderProgram) {
+void light::draw(GLuint shaderProgram, glm::mat4 modelview) {
 	int temp = glGetUniformLocation(shaderProgram, "Light.light_mode");
 	glUniform1i(temp, type);
 	temp = glGetUniformLocation(shaderProgram, "Light.light_color");
@@ -36,15 +37,20 @@ void light::draw(GLuint shaderProgram) {
 	if (type == 1 || type == 2)
 	{
 		temp = glGetUniformLocation(shaderProgram, "Light.light_pos");
-		glUniform3fv(temp, 1, &position[0]);
+		//glm::vec3 pos = glm::vec3(1.0f);
+		//pos.x= (modelview*glm::vec4(position, 1.0f))[0];
+		//pos.y = (modelview*glm::vec4(position, 1.0f))[1];
+		//pos.z = (modelview*glm::vec4(position, 1.0f))[2];
+
+		glUniform3fv(temp, 1,&Direction[0]);
 		temp = glGetUniformLocation(shaderProgram, "Light.att");
-		glUniform1i(temp, attenuation);
+		glUniform1f(temp, attenuation);
 	}
 	if (type == 2)
 	{
 		temp = glGetUniformLocation(shaderProgram, "Light.cutoff");
-		glUniform1i(temp, coneAngle);
+		glUniform1f(temp, coneAngle);
 		temp = glGetUniformLocation(shaderProgram, "Light.exponent");
-		glUniform1i(temp, exponent);
+		glUniform1f(temp, exponent);
 	}
 }

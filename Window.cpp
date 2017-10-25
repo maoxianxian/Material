@@ -9,8 +9,8 @@ OBJObject * bear;
 OBJObject * dragon;
 light* currlit;
 light direction(glm::vec3(0, -1, 0), glm::vec3(1.0f));
-light point(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f), 1.0f);
-light spot(glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(1.0f), 1.0f, glm::vec3(0.0f, -1.0f, 0.0f), (float)M_PI / 6.0f, 1.0f);
+light point(glm::vec3(0.0f, 5.0f, -10.0f), glm::vec3(1.0f), 0.4f);
+light spot(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(1.0f), 0.4f, glm::vec3(0.0f, -1.0f, 0.0f), (float)M_PI / 3.0f, 0.3f);
 GLint shaderProgram;
 bool mode = false;
 // On some systems you need to change this to the absolute path
@@ -155,7 +155,7 @@ void Window::display_callback(GLFWwindow* window)
 		glUniform1i(temp, 0);
 	}
 	//std::cout << mode << std::endl;
-	currlit->draw(shaderProgram);
+	currlit->draw(shaderProgram,Window::V*obj->getMat());
 	obj->draw(shaderProgram);
 	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 	if (state == GLFW_PRESS)

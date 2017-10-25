@@ -7,17 +7,17 @@ OBJObject::OBJObject(const char *filepath, int type)
 {
 	if (type == 0)
 	{
-		mater.ambient = glm::vec3(0.3,0.3,0.3);
+		mater.ambient = glm::vec3(0.1,0.1,0.1);
 		mater.diffuse = glm::vec3(0, 0, 0);
-		mater.specular = glm::vec3(0.6, 0.2, 0.5);
-		mater.shiness = 0.1;
+		mater.specular = glm::vec3(0.9, 0.8, 0.95);
+		mater.shiness = 5;
 	}
 	if (type == 1)
 	{
 
 		mater.ambient = glm::vec3(0.1, 0.1, 0.1);
 		mater.specular = glm::vec3(0, 0, 0);
-		mater.diffuse = glm::vec3(0.8, 0.8, 0.8);
+		mater.diffuse = glm::vec3(0.9, 0.9, 0.9);
 		mater.shiness = 0.5;
 	}
 	if (type == 2)
@@ -26,7 +26,7 @@ OBJObject::OBJObject(const char *filepath, int type)
 		mater.ambient = glm::vec3(0.1, 0.1, 0.1);
 		mater.specular = glm::vec3(0.5, 0.7, 0.8);
 		mater.diffuse = glm::vec3(0.5, 0.7, 0.8);
-		mater.shiness = 0.5;
+		mater.shiness = 0.4;
 	}
 	toWorld = glm::mat4(1.0f);
 	parse(filepath);
@@ -122,13 +122,6 @@ void OBJObject::parse(const char *filepath)
 				fscanf(fp, "%f %f %f", &x, &y, &z);
 				glm::vec3 temp = glm::vec3(x, y, z);
 				normals.push_back(temp);
-				double a = glm::length(glm::normalize(temp));
-				double b = 1;
-				if (a!= b)
-				{
-					//cout <<a << endl;
-				}
-
 			}
 		}
 		char buffer[128];
