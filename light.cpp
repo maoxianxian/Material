@@ -42,7 +42,7 @@ void light::draw(GLuint shaderProgram, glm::mat4 modelview) {
 		//pos.y = (modelview*glm::vec4(position, 1.0f))[1];
 		//pos.z = (modelview*glm::vec4(position, 1.0f))[2];
 
-		glUniform3fv(temp, 1,&Direction[0]);
+		glUniform3fv(temp, 1,&position[0]);
 		temp = glGetUniformLocation(shaderProgram, "Light.att");
 		glUniform1f(temp, attenuation);
 	}

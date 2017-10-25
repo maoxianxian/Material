@@ -9,10 +9,11 @@ OBJObject * bear;
 OBJObject * dragon;
 light* currlit;
 light direction(glm::vec3(0, -1, 0), glm::vec3(1.0f));
-light point(glm::vec3(0.0f, 5.0f, -10.0f), glm::vec3(1.0f), 0.4f);
-light spot(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(1.0f), 0.4f, glm::vec3(0.0f, -1.0f, 0.0f), (float)M_PI / 3.0f, 0.3f);
+light point(glm::vec3(-5.0f, 5.0f, -5.0f), glm::vec3(1.0f), 0.1f);
+light spot(glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f), 0.1f, glm::vec3(0.0f, -1.0f, 0.0f), (float)M_PI / 3.0f, 3.0f);
 GLint shaderProgram;
-bool mode = false;
+bool normalmode = false;
+bool conrollight = false;
 // On some systems you need to change this to the absolute path
 #define VERTEX_SHADER_PATH "../shader.vert"
 #define FRAGMENT_SHADER_PATH "../shader.frag"
@@ -146,7 +147,7 @@ void Window::display_callback(GLFWwindow* window)
 	
 	// Render the cube	
 	int temp = glGetUniformLocation(shaderProgram, "mode");
-	if (mode)
+	if (normalmode)
 	{
 		glUniform1i(temp, 1);
 	}
@@ -161,31 +162,55 @@ void Window::display_callback(GLFWwindow* window)
 	if (state == GLFW_PRESS)
 	{
 		double xpos, ypos;
-		glfwGetCursorPos(window, &xpos, &ypos);
-		if (xpos != prexpos || ypos != preypos)
+
+		if (!conrollight)
 		{
-			glm::vec3 prevec = trackmap(prexpos, preypos);
-			glm::vec3 curvec = trackmap(xpos, ypos);
-			glm::vec3 res = glm::cross(prevec, curvec);
-			float cos = glm::dot(prevec, curvec) / (glm::length(prevec)*glm::length(curvec));
-			if (cos > 1)
+			glfwGetCursorPos(window, &xpos, &ypos);
+			if (xpos != prexpos || ypos != preypos)
 			{
-				cos = 1;
+				glm::vec3 prevec = trackmap(prexpos, preypos);
+				glm::vec3 curvec = trackmap(xpos, ypos);
+				glm::vec3 res = glm::cross(prevec, curvec);
+				float cos = glm::dot(prevec, curvec) / (glm::length(prevec)*glm::length(curvec));
+				if (cos > 1)
+				{
+					cos = 1;
+				}
+				float deg = acos(cos);
+				obj->rotate(res, deg);
 			}
-			float deg = acos(cos);
-			obj->rotate(res, deg);
-			prexpos = xpos;
-			preypos = ypos;
 		}
+		else
+		{
+			glfwGetCursorPos(window, &xpos, &ypos);
+			if (xpos != prexpos || ypos != preypos)
+			{
+				glm::vec3 prevec = trackmap(prexpos, preypos);
+				glm::vec3 curvec = trackmap(xpos, ypos);
+				glm::vec3 res = glm::cross(prevec, curvec);
+				float cos = glm::dot(prevec, curvec) / (glm::length(prevec)*glm::length(curvec));
+				if (cos > 1)
+				{
+					cos = 1;
+				}
+				float deg = acos(cos);
+				//currlit->rotate(res, deg);
+			}
+		}
+		prexpos = xpos;
+		preypos = ypos;
 	}
 	state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
 	if (state == GLFW_PRESS)
 	{
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
-		if (xpos != prerightx || ypos != prerighty)
+		if (!conrollight)
 		{
-			obj->translateAfter((xpos - prerightx)*28.0f/Window::width, (prerighty - ypos)*28.0f/Window::height, 0);
+			if (xpos != prerightx || ypos != prerighty)
+			{
+				obj->translateAfter((xpos - prerightx)*28.0f / Window::width, (prerighty - ypos)*28.0f / Window::height, 0);
+			}
 		}
 		prerightx = xpos;
 		prerighty = ypos;
@@ -218,6 +243,10 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 			// Close the window. This causes the program to also terminate.
 			glfwSetWindowShouldClose(window, GL_TRUE);
 		}
+		else if (key == GLFW_KEY_0)
+		{
+			conrollight = !conrollight;
+		}
 		else if (key == GLFW_KEY_F1)
 		{
 			obj = bunny;
@@ -232,8 +261,7 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		}
 		else if (key == GLFW_KEY_N)
 		{
-			//std::cout << mode << std::endl;
-			mode = !mode;
+			normalmode = !normalmode;
 		}
 		else if (key == GLFW_KEY_1)
 		{

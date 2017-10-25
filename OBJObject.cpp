@@ -10,7 +10,7 @@ OBJObject::OBJObject(const char *filepath, int type)
 		mater.ambient = glm::vec3(0.1,0.1,0.1);
 		mater.diffuse = glm::vec3(0, 0, 0);
 		mater.specular = glm::vec3(0.9, 0.8, 0.95);
-		mater.shiness = 5;
+		mater.shiness = 0.8;
 	}
 	if (type == 1)
 	{
@@ -137,7 +137,8 @@ void OBJObject::draw(GLuint shaderProgram)
 	glm::mat4 modelview = Window::V * toWorld;
 	uProjection = glGetUniformLocation(shaderProgram, "projection");
 	uModelview = glGetUniformLocation(shaderProgram, "modelview");
-	
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"),1,GL_FALSE,&toWorld[0][0]);
+
 	glUniform3fv(glGetUniformLocation(shaderProgram, "ambient"), 1, &mater.ambient[0]);
 	
 	glUniform3fv(glGetUniformLocation(shaderProgram, "diffuse") , 1, &mater.diffuse[0]);
