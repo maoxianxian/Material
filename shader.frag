@@ -4,25 +4,74 @@
 // Inputs to the fragment shader are the outputs of the same name from the vertex shader.
 // Note that you do not have access to the vertex shader's default output, gl_Position.
 in float sampleExtraOutput;
-in vec3 normalvec;
-in struct Light;
-in vec3 ambientout;
-in vec3 diffuseout;
-in vec3 specularout;
+in vec3 normalvecin;
+uniform struct light{
+	int light_mode;
+	vec3 light_color;
+	vec3 light_pos;
+	vec3 light_dir;
+	float att;
+	float cutoff;
+	float exponent;
+} Light;
+uniform vec3 ambient;
+uniform vec3 specular;
+uniform vec3 diffuse;
+uniform int mode;
+uniform float shiness;
 in vec3 vertex;
-flat in int modeout;
 // You can output many things. The first vec4 type output determines the color of the fragment
 out vec4 color;
 
 void main()
 {
-	if(modeout==0){
+	vec3 normalvec = normalvecin;
+	//float lengthl=sqrt(normalvecin.x*normalvecin.x+normalvecin.y*normalvecin.y+normalvecin.z*normalvecin.z);
+	//vec3 normalvec=vec3(normalvecin.x/lengthl,normalvecin.y/lengthl,normalvecin.z/lengthl);
+	if(mode==0){
     // Color everything a hot pink color. An alpha of 1.0f means it is not transparent.
-		color = vec4(normalvec.x, normalvec.y, normalvec.z, sampleExtraOutput);
+	//if(length(normalvec)==1){
+		color = vec4((normalvec.x+1)/2.0f, (normalvec.y+1)/2.0f, (normalvec.z+1)/2.0f, sampleExtraOutput);
+		//color = vec4(normalvec.x, normalvec.y, normalvec.z, sampleExtraOutput);
 	}
 	else
 	{
-		
-		//color = vec4(normalvec.x, normalvec.y, normalvec.z, sampleExtraOutput);
+		vec3 L=vec3(0);
+		vec3 cl=vec3(0);
+		if(Light.light_mode==0)
+		{
+			L= vec3(Light.light_dir.x*(-1), Light.light_dir.y*(-1), Light.light_dir.z*(-1));
+			cl=Light.light_color;
+		}
+		/*if(Light.light_mode==1)
+		{
+			L=(Light.light_pos-vertex)/length(Light.light_pos-vertex);
+			cl=Light.light_color/pow(length(Light.light_pos-vertex),2);
+		}
+		if(Light.light_mode==2)
+		{
+			L=(Light.light_pos-vertex)/length(Light.light_pos-vertex);
+			if(dot(-L,Light.light_dir)<=cos(Light.cutoff))
+			{
+				cl=vec3(0,0,0);
+			}
+			else
+			{
+				cl=Light.light_color*pow(dot(-L,Light.light_dir),Light.exponent);
+			}
+		}*/
+		vec3 cd=vec3(0);
+		cd=cl*diffuse*dot(normalvec,L);
+		vec3 ca=vec3(0);
+		ca=cl*ambient;
+		vec3 cs=vec3(0);
+		vec3 R=reflect(L,normalvec);
+		//vec3 R=normalize(L-2*(dot(L,normalvec))*normalvec);
+		if(ca.x+cd.x+cs.x<=1&&ca.y+cd.y+cs.y<=1&&ca.z+cd.z+cs.z<=1)
+		{
+		vec3 e=vec3(0,0,1);
+		cs=cl*specular*pow(dot(R,e),shiness);
+		color=vec4(ca.x+cd.x+cs.x,ca.y+cd.y+cs.y,ca.z+cd.z+cs.z,sampleExtraOutput);
+		}
 	}
 }

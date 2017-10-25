@@ -19,6 +19,7 @@ struct material {
 	glm::vec3 ambient;
 	glm::vec3 diffuse;
 	glm::vec3 specular;
+	float shiness;
 };
 class OBJObject
 {

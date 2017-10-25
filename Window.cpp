@@ -8,9 +8,9 @@ OBJObject * bunny;
 OBJObject * bear;
 OBJObject * dragon;
 light* currlit;
-light direction(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f));
-light point(glm::vec3(0.0f, -10.0f, 0.0f), glm::vec3(1.0f), 1.0f);
-light spot(glm::vec3(10.0f, 0.0f, 0.0f), glm::vec3(1.0f), 1.0f, glm::vec3(-1.0f, 0.0f, 0.0f), (float)M_PI / 3.0f, 1.0f);
+light direction(glm::vec3(0, -1, 0), glm::vec3(1.0f));
+light point(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f), 1.0f);
+light spot(glm::vec3(0.0f, 20.0f, 0.0f), glm::vec3(1.0f), 1.0f, glm::vec3(0.0f, -1.0f, 0.0f), (float)M_PI / 6.0f, 1.0f);
 GLint shaderProgram;
 bool mode = false;
 // On some systems you need to change this to the absolute path
@@ -33,8 +33,8 @@ void Window::initialize_objects()
 {
 
 	bunny = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bunny.obj",0);
-	bear = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bear.obj",1);
-	dragon = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\dragon.obj",2);
+	bear = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bear.obj",2);
+	dragon = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\dragon.obj",1);
 	currlit = &direction;
 	obj = bunny;
 	//  the shader program. Make sure you have the correct filepath up top
@@ -234,6 +234,18 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		{
 			//std::cout << mode << std::endl;
 			mode = !mode;
+		}
+		else if (key == GLFW_KEY_1)
+		{
+			currlit = &direction;
+		}
+		else if (key == GLFW_KEY_2)
+		{
+			currlit = &point;
+		}
+		else if (key == GLFW_KEY_3)
+		{
+			currlit = &spot;
 		}
 		else if (key == GLFW_KEY_S)
 		{

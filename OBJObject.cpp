@@ -7,9 +7,26 @@ OBJObject::OBJObject(const char *filepath, int type)
 {
 	if (type == 0)
 	{
-		mater.ambient = glm::vec3(0.135f,0.2225,0.1575);
-		mater.diffuse = glm::vec3(0.54, 0.89, 0.63);
-		mater.specular = glm::vec3(0.316228, 0.316228, 0.316228);
+		mater.ambient = glm::vec3(0.3,0.3,0.3);
+		mater.diffuse = glm::vec3(0, 0, 0);
+		mater.specular = glm::vec3(0.6, 0.2, 0.5);
+		mater.shiness = 0.1;
+	}
+	if (type == 1)
+	{
+
+		mater.ambient = glm::vec3(0.1, 0.1, 0.1);
+		mater.specular = glm::vec3(0, 0, 0);
+		mater.diffuse = glm::vec3(0.8, 0.8, 0.8);
+		mater.shiness = 0.5;
+	}
+	if (type == 2)
+	{
+
+		mater.ambient = glm::vec3(0.1, 0.1, 0.1);
+		mater.specular = glm::vec3(0.5, 0.7, 0.8);
+		mater.diffuse = glm::vec3(0.5, 0.7, 0.8);
+		mater.shiness = 0.5;
 	}
 	toWorld = glm::mat4(1.0f);
 	parse(filepath);
@@ -33,9 +50,9 @@ OBJObject::OBJObject(const char *filepath, int type)
 	//glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, NBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*normals.size(), &normals[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*normals.size(), normals.data(), GL_STATIC_DRAW);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -105,6 +122,13 @@ void OBJObject::parse(const char *filepath)
 				fscanf(fp, "%f %f %f", &x, &y, &z);
 				glm::vec3 temp = glm::vec3(x, y, z);
 				normals.push_back(temp);
+				double a = glm::length(glm::normalize(temp));
+				double b = 1;
+				if (a!= b)
+				{
+					//cout <<a << endl;
+				}
+
 			}
 		}
 		char buffer[128];
@@ -120,12 +144,14 @@ void OBJObject::draw(GLuint shaderProgram)
 	glm::mat4 modelview = Window::V * toWorld;
 	uProjection = glGetUniformLocation(shaderProgram, "projection");
 	uModelview = glGetUniformLocation(shaderProgram, "modelview");
-	int temp = glGetUniformLocation(shaderProgram, "ambient");
-	glUniform3fv(temp, 1, &mater.ambient[0]);
-	temp = glGetUniformLocation(shaderProgram, "diffuse");
-	glUniform3fv(temp, 1, &mater.diffuse[0]); 
-	temp = glGetUniformLocation(shaderProgram, "specular");
-	glUniform3fv(temp, 1, &mater.specular[0]);
+	
+	glUniform3fv(glGetUniformLocation(shaderProgram, "ambient"), 1, &mater.ambient[0]);
+	
+	glUniform3fv(glGetUniformLocation(shaderProgram, "diffuse") , 1, &mater.diffuse[0]);
+	
+	glUniform3fv(glGetUniformLocation(shaderProgram, "specular") , 1, &mater.specular[0]);
+	
+	glUniform1f(glGetUniformLocation(shaderProgram, "shiness"), mater.shiness);
 	glUniformMatrix4fv(uProjection, 1, GL_FALSE, &Window::P[0][0]);
 	glUniformMatrix4fv(uModelview, 1, GL_FALSE, &modelview[0][0]);
 	glBindVertexArray(VAO);
