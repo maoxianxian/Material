@@ -16,7 +16,6 @@ OBJObject::OBJObject(const char *filepath, int type)
 	}
 	if (type == 1)
 	{
-
 		mater.ambient = glm::vec3(0.1, 0.1, 0.1);
 		mater.specular = glm::vec3(0, 0, 0);
 		mater.diffuse = glm::vec3(0.0, 0.9, 0.0);
@@ -49,8 +48,8 @@ OBJObject::OBJObject(const char *filepath, int type)
 		scale(2.0f / (xmax - xmin), 2.0f / (ymax - ymin), 2.0f / (zmax - zmin));
 	}
 	//cout << &VAO << endl;
-	//glGenVertexArrays(1, &VAO);
-	/*glGenBuffers(1, &VBO);
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
 	glGenBuffers(1, &NBO);
 	//cout << normals.size() << endl;
@@ -74,7 +73,7 @@ OBJObject::OBJObject(const char *filepath, int type)
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);*/
+	glBindVertexArray(0);
 
 }
 
@@ -173,7 +172,7 @@ void OBJObject::draw(GLuint shaderProgram)
 	glUniformMatrix4fv(uModelview, 1, GL_FALSE, &modelview[0][0]);
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
+ 	glBindVertexArray(0);
 }
 
 void OBJObject::center()

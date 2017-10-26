@@ -10,7 +10,7 @@ OBJObject * dragon;
 light* currlit;
 light direction(glm::vec3(0, -1, 0), glm::vec3(1.0f));
 light point(glm::vec3(-5.0f, 5.0f, 0.0f), glm::vec3(1.0f), 0.1f);
-//light spot(glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f), 0.1f, glm::vec3(0.0f, -1.0f, 0.0f), (float)M_PI / 6.0f, 3.0f);
+light spot(glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f), 0.1f, glm::vec3(0.0f, -1.0f, 0.0f), (float)M_PI / 6.0f, 3.0f);
 GLint shaderProgram;
 bool normalmode = false;
 bool conrollight = false;
@@ -36,7 +36,7 @@ void Window::initialize_objects()
 	bunny = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bunny.obj",0);
 	bear = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\bear.obj",2);
 	dragon = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\dragon.obj",1);
-	//currlit = &direction;
+	currlit = &direction;
 	obj = bunny;
 	//  the shader program. Make sure you have the correct filepath up top
 	shaderProgram = LoadShaders(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
@@ -156,7 +156,7 @@ void Window::display_callback(GLFWwindow* window)
 		glUniform1i(temp, 0);
 	}
 	//std::cout << mode << std::endl;
-	//currlit->draw(shaderProgram,Window::V*obj->getMat());
+	currlit->draw(shaderProgram,Window::V*obj->getMat());
 	obj->draw(shaderProgram);
 	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 	if (state == GLFW_PRESS)
@@ -265,15 +265,15 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		}
 		else if (key == GLFW_KEY_1)
 		{
-			//currlit = &direction;
+			currlit = &direction;
 		}
 		else if (key == GLFW_KEY_2)
 		{
-			//currlit = &point;
+			currlit = &point;
 		}
 		else if (key == GLFW_KEY_3)
 		{
-			//currlit = &spot;
+			currlit = &spot;
 		}
 		else if (key == GLFW_KEY_S)
 		{

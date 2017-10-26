@@ -24,4 +24,5 @@ public:
 	light(glm::vec3 position, glm::vec3 color, float attenuation, glm::vec3 coneDirection, float coneAngle, float exponent);
 	void draw(GLuint shaderProgram, glm::mat4 modelview);
 	void rotate(glm::vec3 aix,float deg);
+	~light();
 };

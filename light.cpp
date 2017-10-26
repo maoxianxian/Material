@@ -15,7 +15,7 @@ light::light(glm::vec3 position, glm::vec3 color, float attenuation)
 	this->position = position;
 	this->color = color;
 	this->attenuation = attenuation;
-	obj = &OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\sphere.obj",3);
+	//obj = &(OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\sphere.obj",3));
 }
 light::light(glm::vec3 position, glm::vec3 color, float attenuation, glm::vec3 coneDirection, float coneAngle, float exponent)
 {
@@ -26,6 +26,10 @@ light::light(glm::vec3 position, glm::vec3 color, float attenuation, glm::vec3 c
 	this->Direction = coneDirection;
 	this->coneAngle = coneAngle;
 	this->exponent = exponent;
+}
+light::~light()
+{
+	delete(obj);
 }
 void light::draw(GLuint shaderProgram, glm::mat4 modelview) {
 	int temp = glGetUniformLocation(shaderProgram, "Light.light_mode");
@@ -58,7 +62,7 @@ void light::draw(GLuint shaderProgram, glm::mat4 modelview) {
 }
 void light::rotate(glm::vec3 aix, float deg)
 {
-	if (type == 1)
+	if (type == 0)
 	{
 		//std::cout << deg << std::endl;
 		if (deg < (float)M_PI / 2)
