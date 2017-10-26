@@ -27,9 +27,7 @@ void main()
 {
 	vec3 normalvec = normalvecin;
 	if(mode==0){
-    // Color everything a hot pink color. An alpha of 1.0f means it is not transparent.
 		color = vec4((normalvec.x+1)/2.0f, (normalvec.y+1)/2.0f, (normalvec.z+1)/2.0f, sampleExtraOutput);
-		//color = vec4(normalvec.x, normalvec.y, normalvec.z, sampleExtraOutput);
 	}
 	else
 	{
@@ -64,8 +62,8 @@ void main()
 		vec3 cs=vec3(0);
 		vec3 R=normalize(reflect(-L,normalvec));
 		vec3 e=normalize(vec3(0.0f, 0.0f, 20.0f)-vertex);
-		//vec3 e=vec3(0,0,-1);
 		cs=cl*specular*pow(dot(R,e),shiness);
-		color=vec4(ca.x+cd.x+cs.x,ca.y+cd.y+cs.y,ca.z+cd.z+cs.z,sampleExtraOutput);
+		vec3 res = vec3(ca.x+cd.x+cs.x,ca.y+cd.y+cs.y,ca.z+cd.z+cs.z);
+		color=vec4(res,sampleExtraOutput);
 	}
 }

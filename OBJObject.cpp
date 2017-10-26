@@ -34,7 +34,7 @@ OBJObject::OBJObject(const char *filepath, int type)
 		mater.ambient = glm::vec3(0);
 		mater.specular = glm::vec3(0);
 		mater.diffuse = glm::vec3(0);
-		mater.shiness = 1;
+		mater.shiness = 0.1;
 	}
 	toWorld = glm::mat4(1.0f);
 	parse(filepath);
@@ -45,14 +45,12 @@ OBJObject::OBJObject(const char *filepath, int type)
 	}
 	else
 	{
-		scale(2.0f / (xmax - xmin), 2.0f / (ymax - ymin), 2.0f / (zmax - zmin));
+		scalebefore(0.4f / (xmax - xmin), 0.4f / (ymax - ymin), 0.4f / (zmax - zmin));
 	}
-	//cout << &VAO << endl;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
 	glGenBuffers(1, &NBO);
-	//cout << normals.size() << endl;
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*vertices.size(), &vertices[0], GL_STATIC_DRAW);
@@ -160,13 +158,10 @@ void OBJObject::draw(GLuint shaderProgram)
 	uProjection = glGetUniformLocation(shaderProgram, "projection");
 	uModelview = glGetUniformLocation(shaderProgram, "modelview");
 	glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"),1,GL_FALSE,&toWorld[0][0]);
-
 	glUniform3fv(glGetUniformLocation(shaderProgram, "ambient"), 1, &mater.ambient[0]);
-	
 	glUniform3fv(glGetUniformLocation(shaderProgram, "diffuse") , 1, &mater.diffuse[0]);
-	
+	//cout << mater.diffuse[0]<<" "<<mater.diffuse[1]<<mater.diffuse[3] << endl;
 	glUniform3fv(glGetUniformLocation(shaderProgram, "specular") , 1, &mater.specular[0]);
-	
 	glUniform1f(glGetUniformLocation(shaderProgram, "shiness"), mater.shiness);
 	glUniformMatrix4fv(uProjection, 1, GL_FALSE, &Window::P[0][0]);
 	glUniformMatrix4fv(uModelview, 1, GL_FALSE, &modelview[0][0]);
@@ -198,7 +193,10 @@ void OBJObject::scale(float x, float y, float z)
 {
 	this->toWorld = glm::scale(glm::mat4(1.0f), glm::vec3(x, x, x))*this->toWorld;
 }
-
+void OBJObject::scalebefore(float x, float y, float z)
+{
+	this->toWorld =this->toWorld*glm::scale(glm::mat4(1.0f), glm::vec3(x, x, x));
+}
 void OBJObject::resetPosition()
 {
 	this->toWorld = glm::translate(glm::mat4(1.0f), glm::vec3(-1 * this->toWorld[3][0], -1 * this->toWorld[3][1], -1 * this->toWorld[3][2]))*this->toWorld;
