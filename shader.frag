@@ -46,7 +46,7 @@ void main()
 		if(Light.light_mode==2)
 		{
 			L=(Light.light_pos-vertex)/length(Light.light_pos-vertex);
-			if(dot(-L,Light.light_dir)<=cos(Light.cutoff))
+			if(dot(-L,Light.light_dir)<=cos(0.1f))
 			{
 				cl=vec3(0,0,0);
 			}

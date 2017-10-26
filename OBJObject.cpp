@@ -160,7 +160,6 @@ void OBJObject::draw(GLuint shaderProgram)
 	glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"),1,GL_FALSE,&toWorld[0][0]);
 	glUniform3fv(glGetUniformLocation(shaderProgram, "ambient"), 1, &mater.ambient[0]);
 	glUniform3fv(glGetUniformLocation(shaderProgram, "diffuse") , 1, &mater.diffuse[0]);
-	//cout << mater.diffuse[0]<<" "<<mater.diffuse[1]<<mater.diffuse[3] << endl;
 	glUniform3fv(glGetUniformLocation(shaderProgram, "specular") , 1, &mater.specular[0]);
 	glUniform1f(glGetUniformLocation(shaderProgram, "shiness"), mater.shiness);
 	glUniformMatrix4fv(uProjection, 1, GL_FALSE, &Window::P[0][0]);

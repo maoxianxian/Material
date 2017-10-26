@@ -38,7 +38,7 @@ void Window::initialize_objects()
 	dragon = new OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\dragon.obj",1);
 	direction= new light(glm::vec3(0, -1, 0), glm::vec3(1.0f));
 	point = new light(glm::vec3(-5.0f, 5.0f, 0.0f), glm::vec3(1.0f), 0.1f);
-	spot = new light(glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f), 0.7f, glm::vec3(0.0f, -1.0f, 0.0f), (float)M_PI / 6.0f, 1.0f);
+	spot = new light(glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f), 0.3f, glm::vec3(0.0f, -1.0f, 0.0f), (float)M_PI / 10.0f, 1.0f);
 	currlit = direction;
 	obj = bunny;
 	//  the shader program. Make sure you have the correct filepath up top
@@ -292,11 +292,22 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		{
 			if (!mods)
 			{
-
+				currlit->coneAngle *= 1.1;
 			}
 			else
 			{
-
+				currlit->coneAngle /= 1.1;
+			}
+		}
+		else if (key == GLFW_KEY_E)
+		{
+			if (!mods)
+			{
+				currlit->exponent *= 1.1;;
+			}
+			else
+			{
+				currlit->exponent /= 1.1;
 			}
 		}
 		else if (key == GLFW_KEY_S)
@@ -329,6 +340,28 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 			else
 			{
 				obj->scale(0.9, 0.9, 0.9);
+			}
+		}
+		else if (key == GLFW_KEY_W)
+		{
+			if (!mods)
+			{
+				currlit->coneAngle *= 1.1;
+			}
+			else
+			{
+				currlit->coneAngle /= 1.1;
+			}
+		}
+		else if (key == GLFW_KEY_E)
+		{
+			if (!mods)
+			{
+				currlit->exponent *= 1.1;;
+			}
+			else
+			{
+				currlit->exponent /= 1.1;
 			}
 		}
 	}
