@@ -46,23 +46,23 @@ void main()
 		if(Light.light_mode==2)
 		{
 			L=(Light.light_pos-vertex)/length(Light.light_pos-vertex);
-			if(dot(-L,Light.light_dir)<=cos(0.1f))
+			if(dot(normalize(-L),normalize(Light.light_dir))<=cos(Light.cutoff))
 			{
 				cl=vec3(0,0,0);
 			}
 			else
 			{
-				cl=Light.light_color*pow(dot(-L,Light.light_dir),Light.exponent)/(Light.att*pow(length(Light.light_pos-vertex),2));
+				cl=Light.light_color*pow(max(0,dot(-L,Light.light_dir)),Light.exponent)/(Light.att*pow(length(Light.light_pos-vertex),2));
 			}
 		}
 		vec3 cd=vec3(0);
-		cd=cl*diffuse*dot(normalvec,L);
+		cd=cl*diffuse*max(0,dot(normalvec,L));
 		vec3 ca=vec3(0);
 		ca=cl*ambient;
 		vec3 cs=vec3(0);
 		vec3 R=normalize(reflect(-L,normalvec));
 		vec3 e=normalize(vec3(0.0f, 0.0f, 20.0f)-vertex);
-		cs=cl*specular*pow(dot(R,e),shiness);
+		cs=cl*specular*pow(max(0,dot(R,e)),shiness);
 		vec3 res = vec3(ca.x+cd.x+cs.x,ca.y+cd.y+cs.y,ca.z+cd.z+cs.z);
 		color=vec4(res,sampleExtraOutput);
 	}

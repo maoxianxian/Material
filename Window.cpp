@@ -2,6 +2,7 @@
 #include "window.h"
 #include <math.h>
 #include "OBJObject.h"
+
 const char* window_title = "GLFW Starter Project";
 OBJObject * obj;
 OBJObject * bunny;
@@ -292,11 +293,11 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		{
 			if (!mods)
 			{
-				currlit->coneAngle *= 1.1;
+				currlit->coneAngle += 0.01;
 			}
 			else
 			{
-				currlit->coneAngle /= 1.1;
+				currlit->coneAngle -= 0.01;
 			}
 		}
 		else if (key == GLFW_KEY_E)
@@ -346,11 +347,11 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		{
 			if (!mods)
 			{
-				currlit->coneAngle *= 1.1;
+				currlit->coneAngle += 0.01;
 			}
 			else
 			{
-				currlit->coneAngle /= 1.1;
+				currlit->coneAngle -= 0.01;
 			}
 		}
 		else if (key == GLFW_KEY_E)

@@ -57,6 +57,7 @@ void light::draw(GLuint shaderProgram, glm::mat4 modelview) {
 	}
 	if (type == 2)
 	{
+		std::cout << coneAngle << std::endl;
 		temp = glGetUniformLocation(shaderProgram, "Light.cutoff");
 		glUniform1f(temp, coneAngle);
 		temp = glGetUniformLocation(shaderProgram, "Light.exponent");
