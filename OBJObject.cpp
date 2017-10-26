@@ -2,6 +2,8 @@
 #include <iostream>
 #include <math.h>
 #include <glm/gtc/type_ptr.hpp>
+#include "Window.h"
+
 using namespace std;
 OBJObject::OBJObject(const char *filepath, int type)
 {
@@ -9,29 +11,46 @@ OBJObject::OBJObject(const char *filepath, int type)
 	{
 		mater.ambient = glm::vec3(0.1,0.1,0.1);
 		mater.diffuse = glm::vec3(0, 0, 0);
-		mater.specular = glm::vec3(0.9, 0.8, 0.95);
-		mater.shiness = 0.8;
+		mater.specular = glm::vec3(0.9, 0.0, 0.0);
+		mater.shiness = 0.3;
 	}
 	if (type == 1)
 	{
 
 		mater.ambient = glm::vec3(0.1, 0.1, 0.1);
 		mater.specular = glm::vec3(0, 0, 0);
-		mater.diffuse = glm::vec3(0.9, 0.9, 0.9);
-		mater.shiness = 0.5;
+		mater.diffuse = glm::vec3(0.0, 0.9, 0.0);
+		mater.shiness = 1;
 	}
 	if (type == 2)
 	{
 
 		mater.ambient = glm::vec3(0.1, 0.1, 0.1);
-		mater.specular = glm::vec3(0.5, 0.7, 0.8);
-		mater.diffuse = glm::vec3(0.5, 0.7, 0.8);
-		mater.shiness = 0.4;
+		mater.specular = glm::vec3(0.0, 0.0, 0.8);
+		mater.diffuse = glm::vec3(0.0, 0.0, 0.8);
+		mater.shiness = 0.8;
+	}
+	if (type == 3)
+	{
+		mater.ambient = glm::vec3(0);
+		mater.specular = glm::vec3(0);
+		mater.diffuse = glm::vec3(0);
+		mater.shiness = 1;
 	}
 	toWorld = glm::mat4(1.0f);
 	parse(filepath);
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
+	if (type != 3)
+	{
+		center();
+		scale(2.0f / (xmax - xmin), 2.0f / (ymax - ymin), 2.0f / (zmax - zmin));
+	}
+	else
+	{
+		scale(2.0f / (xmax - xmin), 2.0f / (ymax - ymin), 2.0f / (zmax - zmin));
+	}
+	//cout << &VAO << endl;
+	//glGenVertexArrays(1, &VAO);
+	/*glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
 	glGenBuffers(1, &NBO);
 	//cout << normals.size() << endl;
@@ -55,7 +74,8 @@ OBJObject::OBJObject(const char *filepath, int type)
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	glBindVertexArray(0);*/
+
 }
 
 OBJObject::~OBJObject()
@@ -81,55 +101,58 @@ void OBJObject::parse(const char *filepath)
 	while (!feof(fp))
 	{
 		c1 = fgetc(fp);
-		c2 = fgetc(fp);
-		if ((c1 == 'v') && (c2 == ' '))
+		
+		if (c1 != '#'&&c1 != 13 && c1 != 10)
 		{
-			int a = fscanf(fp, "%f %f %f", &x, &y, &z);
-			glm::vec3 temp = glm::vec3(x, y, z);
-			vertices.push_back(temp);
-			if (x > xmax)
+			c2 = fgetc(fp);
+
+			if ((c1 == 'v') && (c2 == ' '))
 			{
-				xmax = x;
-			}
-			if (x < xmin)
-			{
-				xmin = x;
-			}if (y > ymax)
-			{
-				ymax = y;
-			}if (y < ymin)
-			{
-				ymin = y;
-			}if (z > zmax)
-			{
-				zmax = z;
-			}if (z < zmin)
-			{
-				zmin = z;
-			}
-		}
-		else
-		{
-			if ((c1 == 'f') && (c2 == ' '))
-			{
-				fscanf(fp, "%d %s %d %s %d", &i1, &temps, &i2, &temps, &i3);
-				indices.push_back(i1-1);
-				indices.push_back(i2-1);
-				indices.push_back(i3-1);
-			}
-			else if ((c1 == 'v') && (c2 == 'n') && (fgetc(fp) == ' '))
-			{
-				fscanf(fp, "%f %f %f", &x, &y, &z);
+				int a = fscanf(fp, "%f %f %f", &x, &y, &z);
 				glm::vec3 temp = glm::vec3(x, y, z);
-				normals.push_back(temp);
+				vertices.push_back(temp);
+				if (x > xmax)
+				{
+					xmax = x;
+				}
+				if (x < xmin)
+				{
+					xmin = x;
+				}if (y > ymax)
+				{
+					ymax = y;
+				}if (y < ymin)
+				{
+					ymin = y;
+				}if (z > zmax)
+				{
+					zmax = z;
+				}if (z < zmin)
+				{
+					zmin = z;
+				}
+			}
+			else
+			{
+				if ((c1 == 'f') && (c2 == ' '))
+				{
+					fscanf(fp, "%d %s %d %s %d", &i1, &temps, &i2, &temps, &i3);
+					indices.push_back(i1 - 1);
+					indices.push_back(i2 - 1);
+					indices.push_back(i3 - 1);
+				}
+				else if ((c1 == 'v') && (c2 == 'n') && (fgetc(fp) == ' '))
+				{
+					fscanf(fp, "%f %f %f", &x, &y, &z);
+					glm::vec3 temp = glm::vec3(x, y, z);
+					normals.push_back(temp);
+				}
 			}
 		}
 		char buffer[128];
 		fgets(buffer, 128, fp);
 	}
 	fclose(fp);   // make sure you don't forget to close the file when done
-	center();
-	scale(2.0f / (xmax - xmin), 2.0f / (ymax - ymin), 2.0f / (zmax - zmin));
 }
 
 void OBJObject::draw(GLuint shaderProgram)

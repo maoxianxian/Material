@@ -13,7 +13,6 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
-#include "Window.h"
 
 struct material {
 	glm::vec3 ambient;

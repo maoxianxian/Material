@@ -63,11 +63,9 @@ void main()
 		ca=cl*ambient;
 		vec3 cs=vec3(0);
 		vec3 R=normalize(reflect(L,normalvec));
-		vec3 e=normalize(vec3(0.0f, 0.0f, 20.0f)-vertex);
+		vec3 e=-normalize(vec3(0.0f, 0.0f, 20.0f)-vertex);
 		//vec3 e=vec3(0,0,-1);
 		cs=cl*specular*pow(dot(R,e),shiness);
 		color=vec4(ca.x+cd.x+cs.x,ca.y+cd.y+cs.y,ca.z+cd.z+cs.z,sampleExtraOutput);
-		//if(Light.att==0){
-		//color=vec4(1.0f,1.0f,1.0f,1);}
 	}
 }

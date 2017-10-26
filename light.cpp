@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 #include "light.h"
 #include <iostream>
 light::light(glm::vec3 Direction, glm::vec3 color)
@@ -13,6 +15,7 @@ light::light(glm::vec3 position, glm::vec3 color, float attenuation)
 	this->position = position;
 	this->color = color;
 	this->attenuation = attenuation;
+	obj = &OBJObject("C:\\Users\\c7ye\\Desktop\\CSE167StarterCode2-master\\sphere.obj",3);
 }
 light::light(glm::vec3 position, glm::vec3 color, float attenuation, glm::vec3 coneDirection, float coneAngle, float exponent)
 {
@@ -41,7 +44,6 @@ void light::draw(GLuint shaderProgram, glm::mat4 modelview) {
 		//pos.x= (modelview*glm::vec4(position, 1.0f))[0];
 		//pos.y = (modelview*glm::vec4(position, 1.0f))[1];
 		//pos.z = (modelview*glm::vec4(position, 1.0f))[2];
-
 		glUniform3fv(temp, 1,&position[0]);
 		temp = glGetUniformLocation(shaderProgram, "Light.att");
 		glUniform1f(temp, attenuation);
@@ -52,5 +54,20 @@ void light::draw(GLuint shaderProgram, glm::mat4 modelview) {
 		glUniform1f(temp, coneAngle);
 		temp = glGetUniformLocation(shaderProgram, "Light.exponent");
 		glUniform1f(temp, exponent);
+	}
+}
+void light::rotate(glm::vec3 aix, float deg)
+{
+	if (type == 1)
+	{
+		//std::cout << deg << std::endl;
+		if (deg < (float)M_PI / 2)
+		{
+			Direction = glm::rotate(glm::mat4(1.0f), deg, aix)*glm::vec4(Direction, 0);
+		}
+		else
+		{
+			Direction = glm::rotate(glm::mat4(1.0f), deg - (float)M_PI, aix)*glm::vec4(Direction, 0);
+		}
 	}
 }
