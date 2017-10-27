@@ -22,7 +22,7 @@ uniform float shiness;
 in vec3 vertex;
 // You can output many things. The first vec4 type output determines the color of the fragment
 out vec4 color;
-
+uniform float spot;
 void main()
 {
 	vec3 normalvec = normalvecin;
@@ -52,18 +52,25 @@ void main()
 			}
 			else
 			{
-				cl=Light.light_color*pow(max(0,dot(-L,Light.light_dir)),Light.exponent)/(Light.att*pow(length(Light.light_pos-vertex),2));
+				cl=Light.light_color*pow(dot(-L,Light.light_dir),Light.exponent)/(Light.att*pow(length(Light.light_pos-vertex),2));
 			}
 		}
-		vec3 cd=vec3(0);
-		cd=cl*diffuse*max(0,dot(normalvec,L));
-		vec3 ca=vec3(0);
-		ca=cl*ambient;
-		vec3 cs=vec3(0);
-		vec3 R=normalize(reflect(-L,normalvec));
-		vec3 e=normalize(vec3(0.0f, 0.0f, 20.0f)-vertex);
-		cs=cl*specular*pow(max(0,dot(R,e)),shiness);
-		vec3 res = vec3(ca.x+cd.x+cs.x,ca.y+cd.y+cs.y,ca.z+cd.z+cs.z);
-		color=vec4(res,sampleExtraOutput);
+		if(spot==1)
+		{
+			color=vec4(Light.light_color,sampleExtraOutput);
+		}
+		else
+		{
+			vec3 cd=vec3(0);
+			cd=cl*diffuse*max(0,dot(normalvec,L));
+			vec3 ca=vec3(0);
+			ca=cl*ambient;
+			vec3 cs=vec3(0);
+			vec3 R=normalize(reflect(-L,normalvec));
+			vec3 e=normalize(vec3(0.0f, 0.0f, 20.0f)-vertex);
+			cs=cl*specular*pow(max(0,dot(R,e)),shiness);
+			vec3 res = vec3(ca.x+cd.x+cs.x,ca.y+cd.y+cs.y,ca.z+cd.z+cs.z);
+			color=vec4(res,sampleExtraOutput);
+		}
 	}
 }

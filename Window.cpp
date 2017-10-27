@@ -14,7 +14,7 @@ light * point;
 light * spot;
 GLint shaderProgram;
 bool normalmode = false;
-bool conrollight = false;
+bool conrollight = true;
 // On some systems you need to change this to the absolute path
 #define VERTEX_SHADER_PATH "../shader.vert"
 #define FRAGMENT_SHADER_PATH "../shader.frag"

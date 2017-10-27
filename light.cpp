@@ -57,7 +57,6 @@ void light::draw(GLuint shaderProgram, glm::mat4 modelview) {
 	}
 	if (type == 2)
 	{
-		std::cout << coneAngle << std::endl;
 		temp = glGetUniformLocation(shaderProgram, "Light.cutoff");
 		glUniform1f(temp, coneAngle);
 		temp = glGetUniformLocation(shaderProgram, "Light.exponent");
@@ -65,8 +64,14 @@ void light::draw(GLuint shaderProgram, glm::mat4 modelview) {
 	}
 	if (type == 1 || type == 2)
 	{
+		float spot = 1;
+		temp = glGetUniformLocation(shaderProgram, "spot");
+		glUniform1f(temp, spot);
 		obj->mater.ambient = this->color;
 		obj->draw(shaderProgram);
+		spot = 0;
+		temp = glGetUniformLocation(shaderProgram, "spot");
+		glUniform1f(temp, spot);
 	}
 }
 void light::rotate(glm::vec3 aix, float deg)
