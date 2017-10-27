@@ -13,7 +13,7 @@ light * direction;
 light * point;
 light * spot;
 GLint shaderProgram;
-bool normalmode = false;
+bool normalmode = true;
 bool conrollight = true;
 // On some systems you need to change this to the absolute path
 #define VERTEX_SHADER_PATH "../shader.vert"
@@ -275,7 +275,13 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		}
 		else if (key == GLFW_KEY_N)
 		{
-			normalmode = !normalmode;
+			if (normalmode) {
+				normalmode = !normalmode;
+				conrollight = false;
+			}
+			else {
+				normalmode = !normalmode;
+			}
 		}
 		else if (key == GLFW_KEY_1)
 		{
